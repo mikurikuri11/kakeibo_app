@@ -1,3 +1,17 @@
+import { Typography } from "@mui/material"
+
 export const Report = () => {
-  return <div>Report</div>;
+  return (
+    <>
+      <Typography fontWeight="fontWeightRegular">
+        Report
+      </Typography>
+      <Typography fontWeight="fontWeightMedium">
+        Report
+      </Typography>
+      <Typography fontWeight="fontWeightBold">
+        Report
+      </Typography>
+    </>
+  )
 }
