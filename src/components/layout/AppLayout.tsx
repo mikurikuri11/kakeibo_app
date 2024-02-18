@@ -31,15 +31,21 @@ export const AppLayout = () => {
   };
 
   return (
-    <Box sx={{ display: "flex", bgcolor: (theme) => theme.palette.grey[100], minHeight: "100vh" }}>
+    <Box
+      sx={{
+        display: "flex",
+        bgcolor: (theme) => theme.palette.grey[100],
+        minHeight: "100vh",
+      }}
+    >
       <CssBaseline />
 
       {/* ヘッダー */}
       <AppBar
         position="fixed"
         sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
+          width: { md: `calc(100% - ${drawerWidth}px)` },
+          ml: { md: `${drawerWidth}px` },
         }}
       >
         <Toolbar>
@@ -63,7 +69,7 @@ export const AppLayout = () => {
         mobileOpen={mobileOpen}
         handleDrawerClose={handleDrawerClose}
         handleDrawerTransitionEnd={handleDrawerTransitionEnd}
-        />
+      />
 
       {/* メインコンテンツ */}
       <Box
@@ -71,7 +77,7 @@ export const AppLayout = () => {
         sx={{
           flexGrow: 1,
           p: 3,
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          width: { md: `calc(100% - ${drawerWidth}px)` },
         }}
       >
         <Toolbar />

@@ -48,12 +48,16 @@ const drawer = (
     <Divider />
     <List>
       {MenuItems.map((item, index) => (
-        <NavLink key={index} to={item.path} style={({isActive}) => {
-          return {
-            ...baseLinkStyle,
-            ...(isActive ? activeLinkStyle : {}),
-          }
-        }}>
+        <NavLink
+          key={index}
+          to={item.path}
+          style={({ isActive }) => {
+            return {
+              ...baseLinkStyle,
+              ...(isActive ? activeLinkStyle : {}),
+            };
+          }}
+        >
           <ListItem key={index} disablePadding>
             <ListItemButton>
               <ListItemIcon>
@@ -80,7 +84,7 @@ export const Sidebar = (props: SidebarProps) => {
   return (
     <Box
       component="nav"
-      sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+      sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
       aria-label="mailbox folders"
     >
       {/* モバイル用 */}
@@ -107,7 +111,7 @@ export const Sidebar = (props: SidebarProps) => {
       <Drawer
         variant="permanent"
         sx={{
-          display: { xs: "none", sm: "block" },
+          display: { xs: "none", md: "block" },
           "& .MuiDrawer-paper": {
             boxSizing: "border-box",
             width: drawerWidth,
