@@ -6,14 +6,23 @@ import { DatesSetArg, EventContentArg } from "@fullcalendar/core";
 import { Balance, CalendarContent, Transaction } from "../types";
 import { calculateDailyBalances } from "../utils/financeCaluculations";
 import { formatCurrency } from "../utils/formatting";
+import interactionPlugin, { DateClickArg } from "@fullcalendar/interaction";
+import { useTheme } from "@mui/material";
+import { isSameMonth } from "date-fns";
 
 interface CalenderProps {
   monthlyTransactions: Transaction[];
   setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>;
+  setCurrentDay: React.Dispatch<React.SetStateAction<string>>;
+  currentDay: string;
+  today: string;
 }
 
 export const Calender = (props: CalenderProps) => {
-  const { monthlyTransactions, setCurrentMonth } = props;
+  const { monthlyTransactions, setCurrentMonth, setCurrentDay, currentDay, today } =
+    props;
+
+  const theme = useTheme();
 
   const renderEventContent = (eventInfo: EventContentArg) => {
     return (
@@ -29,6 +38,12 @@ export const Calender = (props: CalenderProps) => {
         </div>
       </div>
     );
+  };
+
+  const backgroundEvent = {
+    start: currentDay,
+    display: "background",
+    backgroundColor: theme.palette.incomeColor.light,
   };
 
   // FullCalendar用のイベントを生成する関数
@@ -50,17 +65,27 @@ export const Calender = (props: CalenderProps) => {
   const calenderEvents = createCalendarEvents(dailyBalances);
 
   const handleDateSet = (dateSetInfo: DatesSetArg) => {
-    setCurrentMonth(dateSetInfo.view.currentStart);
+    const currentMonth = dateSetInfo.view.currentStart
+    setCurrentMonth(currentMonth);
+    const todayDate = new Date();
+    if (isSameMonth(todayDate, currentMonth) ) {
+      setCurrentDay(today);
+    }
+  };
+
+  const handleDateClick = (dateInfo: DateClickArg) => {
+    setCurrentDay(dateInfo.dateStr);
   };
 
   return (
     <FullCalendar
       locale={jaLocale}
-      plugins={[dayGridPlugin]}
+      plugins={[dayGridPlugin, interactionPlugin]}
       initialView="dayGridMonth"
-      events={calenderEvents}
+      events={[...calenderEvents, backgroundEvent]}
       eventContent={renderEventContent}
       datesSet={handleDateSet}
+      dateClick={handleDateClick}
     />
   );
 };
