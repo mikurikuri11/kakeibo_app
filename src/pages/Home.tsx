@@ -10,10 +10,11 @@ import { format } from "date-fns";
 interface HomeProps {
   monthlyTransactions: Transaction[];
   setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>;
+  onSaveTransaction: (transaction: Transaction) => Promise<void>;
 }
 
 export const Home = (props: HomeProps) => {
-  const { monthlyTransactions, setCurrentMonth } = props;
+  const { monthlyTransactions, setCurrentMonth, onSaveTransaction } = props;
   const today = format(new Date(), "yyyy-MM-dd");
   const [currentDay, setCurrentDay] = useState(today);
   const [isEntryDrawerOpen, setIsEntryDrawerOpen] = useState(false);
@@ -55,6 +56,7 @@ export const Home = (props: HomeProps) => {
           onCloseForm={closeForm}
           isEntryDrawerOpen={isEntryDrawerOpen}
           currentDay={currentDay}
+          onSaveTransaction={onSaveTransaction}
         />
       </Box>
     </Box>

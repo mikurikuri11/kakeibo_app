@@ -20,15 +20,16 @@ import TrainIcon from "@mui/icons-material/Train";
 import WorkIcon from "@mui/icons-material/Work";
 import SavingIcon from "@mui/icons-material/Savings";
 import AddBusinessIcon from "@mui/icons-material/AddBusiness";
-import { Controller, useForm } from "react-hook-form";
-import { ExpenseCategory, IncomeCategory } from "../types";
+import { Controller, SubmitErrorHandler, useForm } from "react-hook-form";
+import { ExpenseCategory, IncomeCategory, Transaction } from "../types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { transactionSchema } from "../validations/schema";
+import { Schema, transactionSchema } from "../validations/schema";
 
 interface TransactionFormProps {
   onCloseForm: () => void;
   isEntryDrawerOpen: boolean;
   currentDay: string;
+  onSaveTransaction: (transaction: Transaction) => Promise<void>;
 }
 
 type IncomeExpense = "income" | "expense";
@@ -39,7 +40,7 @@ interface CategoryItem {
 }
 
 export const TransactionForm = (props: TransactionFormProps) => {
-  const { currentDay, onCloseForm, isEntryDrawerOpen } = props;
+  const { currentDay, onCloseForm, isEntryDrawerOpen, onSaveTransaction } = props;
   const formWidth = 320;
 
   const expenseCategories: CategoryItem[] = [
@@ -65,7 +66,7 @@ export const TransactionForm = (props: TransactionFormProps) => {
     watch,
     formState: { errors },
     handleSubmit,
-  } = useForm({
+  } = useForm<Schema>({
     defaultValues: {
       type: "expense",
       date: currentDay,
@@ -93,9 +94,9 @@ export const TransactionForm = (props: TransactionFormProps) => {
     setValue("date", currentDay);
   }, [currentDay]);
 
-  const onSubmit = (data: any) => {
-    console.log(data);
-  };
+  const onSubmit: SubmitErrorHandler<Schema> = async (data) => {
+    // await onSaveTransaction(data);
+  }
 
   return (
     <Box
@@ -133,7 +134,7 @@ export const TransactionForm = (props: TransactionFormProps) => {
         </IconButton>
       </Box>
       {/* フォーム要素 */}
-      <Box component={"form"} onSubmit={handleSubmit(onSubmit)}>
+      <Box component={"form"} >
         <Stack spacing={2}>
           {/* 収支切り替えボタン */}
           <Controller

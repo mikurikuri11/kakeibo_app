@@ -10,9 +10,10 @@ import { Transaction } from "./types";
 import { ThemeProvider } from "@emotion/react";
 import { CssBaseline } from "@mui/material";
 import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { addDoc, collection, getDocs } from "firebase/firestore";
 import { db } from "./firebase";
 import { formatMonth } from "./utils/formatting";
+import { Schema } from "./validations/schema";
 
 function App() {
   // FireStoreエラーかどうかを判定する型ガード関数
@@ -25,6 +26,7 @@ function App() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
+  // FireStoreからデータを取得する
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
@@ -48,9 +50,24 @@ function App() {
     fetchTransactions();
   }, []);
 
+  // 月次の取引データを取得する
   const monthlyTransactions = transactions.filter((transaction) => {
     return transaction.date.startsWith(formatMonth(currentMonth));
   });
+
+  // 取引データを保存する
+  const handleSaveTransaction = async (transaction: Schema) => {
+    try {
+      const docRef = await addDoc(collection(db, "Transactions"), transaction);
+      console.log("Document written with ID: ", docRef.id);
+    } catch (error) {
+      if (isFireStoreError(error)) {
+        console.error("Firestore Error", error.code, error.message);
+      } else {
+        console.error("Unknown Error", error);
+      }
+    }
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -58,7 +75,16 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<AppLayout />}>
-            <Route index element={<Home monthlyTransactions={monthlyTransactions} setCurrentMonth={setCurrentMonth} />} />
+            <Route
+              index
+              element={
+                <Home
+                  monthlyTransactions={monthlyTransactions}
+                  setCurrentMonth={setCurrentMonth}
+                  onSaveTransaction={handleSaveTransaction}
+                />
+              }
+            />
             <Route path="/report" element={<Report />} />
             <Route path="*" element={<NoMatch />} />
           </Route>
