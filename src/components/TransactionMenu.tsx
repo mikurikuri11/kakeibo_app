@@ -22,10 +22,11 @@ import { IconComponents } from "./common/IconComponents";
 interface TransactionMenuProps {
   dailyTransactions: Transaction[];
   currentDay: string;
+  onAddTransactionForm: () => void;
 }
 
 export const TransactionMenu = (props: TransactionMenuProps) => {
-  const { dailyTransactions, currentDay } = props;
+  const { dailyTransactions, currentDay, onAddTransactionForm } = props;
   const menuDrawerWidth = 320;
   return (
     <Drawer
@@ -62,7 +63,11 @@ export const TransactionMenu = (props: TransactionMenuProps) => {
             <Typography variant="body1">内訳</Typography>
           </Box>
           {/* 右側の追加ボタン */}
-          <Button startIcon={<AddCircleIcon />} color="primary">
+          <Button
+            startIcon={<AddCircleIcon />}
+            color="primary"
+            onClick={onAddTransactionForm}
+          >
             内訳を追加
           </Button>
         </Box>
@@ -77,7 +82,7 @@ export const TransactionMenu = (props: TransactionMenuProps) => {
                       backgroundColor:
                         transaction.type === "income"
                           ? (theme) => theme.palette.incomeColor.light
-                          : (theme) => theme.palette.expenseColor.light
+                          : (theme) => theme.palette.expenseColor.light,
                     }}
                   >
                     <CardActionArea>
