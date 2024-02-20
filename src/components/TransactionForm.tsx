@@ -20,7 +20,7 @@ import TrainIcon from "@mui/icons-material/Train";
 import WorkIcon from "@mui/icons-material/Work";
 import SavingIcon from "@mui/icons-material/Savings";
 import AddBusinessIcon from "@mui/icons-material/AddBusiness";
-import { Controller, SubmitErrorHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { ExpenseCategory, IncomeCategory, Transaction } from "../types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Schema, transactionSchema } from "../validations/schema";
@@ -94,8 +94,8 @@ export const TransactionForm = (props: TransactionFormProps) => {
     setValue("date", currentDay);
   }, [currentDay]);
 
-  const onSubmit: SubmitErrorHandler<Schema> = async (data) => {
-    // await onSaveTransaction(data);
+  const onSubmit: SubmitHandler<Schema> = async (data) => {
+    await onSaveTransaction(data as Transaction);
   }
 
   return (
@@ -134,7 +134,7 @@ export const TransactionForm = (props: TransactionFormProps) => {
         </IconButton>
       </Box>
       {/* フォーム要素 */}
-      <Box component={"form"} >
+      <Box component={"form"} onSubmit={handleSubmit(onSubmit)} >
         <Stack spacing={2}>
           {/* 収支切り替えボタン */}
           <Controller
