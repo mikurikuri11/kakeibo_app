@@ -60,6 +60,16 @@ function App() {
     try {
       const docRef = await addDoc(collection(db, "Transactions"), transaction);
       console.log("Document written with ID: ", docRef.id);
+
+      const newTranction = {
+        id: docRef.id,
+        ...transaction,
+      } as Transaction;
+
+      setTransactions((prevTransactions) => [
+        ...prevTransactions,
+        newTranction,
+      ]);
     } catch (error) {
       if (isFireStoreError(error)) {
         console.error("Firestore Error", error.code, error.message);
