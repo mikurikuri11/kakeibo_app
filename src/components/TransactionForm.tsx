@@ -30,6 +30,7 @@ interface TransactionFormProps {
   isEntryDrawerOpen: boolean;
   currentDay: string;
   onSaveTransaction: (transaction: Transaction) => Promise<void>;
+  selectedTransaction: Transaction | null;
 }
 
 type IncomeExpense = "income" | "expense";
@@ -40,7 +41,13 @@ interface CategoryItem {
 }
 
 export const TransactionForm = (props: TransactionFormProps) => {
-  const { currentDay, onCloseForm, isEntryDrawerOpen, onSaveTransaction } = props;
+  const {
+    currentDay,
+    onCloseForm,
+    isEntryDrawerOpen,
+    onSaveTransaction,
+    selectedTransaction,
+  } = props;
   const formWidth = 320;
 
   const expenseCategories: CategoryItem[] = [
@@ -66,6 +73,7 @@ export const TransactionForm = (props: TransactionFormProps) => {
     watch,
     formState: { errors },
     handleSubmit,
+    reset,
   } = useForm<Schema>({
     defaultValues: {
       type: "expense",
@@ -79,6 +87,7 @@ export const TransactionForm = (props: TransactionFormProps) => {
 
   const incomeExpenseToggle = (type: IncomeExpense) => () => {
     setValue("type", type);
+    setValue("category", "");
   };
 
   // 収支タイプを監視
@@ -96,7 +105,20 @@ export const TransactionForm = (props: TransactionFormProps) => {
 
   const onSubmit: SubmitHandler<Schema> = async (data) => {
     await onSaveTransaction(data as Transaction);
-  }
+    reset({ date: currentDay, amount: 0, content: "", type: "expense" });
+  };
+
+  useEffect(() => {
+    if (selectedTransaction) {
+      setValue("type", selectedTransaction.type);
+      setValue("date", selectedTransaction.date);
+      setValue("amount", selectedTransaction.amount);
+      setValue("content", selectedTransaction.content);
+      setValue("category", selectedTransaction.category);
+    } else {
+      reset({ date: currentDay, amount: 0, content: "", type: "expense" });
+    }
+  }, [selectedTransaction]);
 
   return (
     <Box
@@ -120,9 +142,7 @@ export const TransactionForm = (props: TransactionFormProps) => {
     >
       {/* 入力エリアヘッダー */}
       <Box display={"flex"} justifyContent={"space-between"} mb={2}>
-        <Typography variant="h6">
-          入力
-        </Typography>
+        <Typography variant="h6">入力</Typography>
         {/* 閉じるボタン */}
         <IconButton
           onClick={onCloseForm}
@@ -134,7 +154,7 @@ export const TransactionForm = (props: TransactionFormProps) => {
         </IconButton>
       </Box>
       {/* フォーム要素 */}
-      <Box component={"form"} onSubmit={handleSubmit(onSubmit)} >
+      <Box component={"form"} onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={2}>
           {/* 収支切り替えボタン */}
           <Controller
