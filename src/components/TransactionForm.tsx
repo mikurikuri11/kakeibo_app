@@ -31,6 +31,14 @@ interface TransactionFormProps {
   currentDay: string;
   onSaveTransaction: (transaction: Transaction) => Promise<void>;
   selectedTransaction: Transaction | null;
+  onDeleteTransaction: (transactionId: string) => Promise<void>;
+  setSelectedTransaction: React.Dispatch<
+    React.SetStateAction<Transaction | null>
+  >;
+  onUpdateTransaction: (
+    transaction: Schema,
+    transactionId: string
+  ) => Promise<void>;
 }
 
 type IncomeExpense = "income" | "expense";
@@ -47,6 +55,9 @@ export const TransactionForm = (props: TransactionFormProps) => {
     isEntryDrawerOpen,
     onSaveTransaction,
     selectedTransaction,
+    onDeleteTransaction,
+    setSelectedTransaction,
+    onUpdateTransaction,
   } = props;
   const formWidth = 320;
 
@@ -104,9 +115,35 @@ export const TransactionForm = (props: TransactionFormProps) => {
   }, [currentDay]);
 
   const onSubmit: SubmitHandler<Schema> = async (data) => {
-    await onSaveTransaction(data as Transaction);
+    if (selectedTransaction) {
+      onUpdateTransaction(data, selectedTransaction.id)
+        .then(() => {
+          setSelectedTransaction(null);
+          console.log("update");
+        })
+        .catch((error) => {
+          console.error("Error updating document: ", error);
+        });
+    } else {
+      await onSaveTransaction(data as Transaction)
+        .then(() => {
+          console.log("save");
+        })
+        .catch((error) => {
+          console.error("Error updating document: ", error);
+        });
+    }
     reset({ date: currentDay, amount: 0, content: "", type: "expense" });
   };
+
+  useEffect(() => {
+    if (selectedTransaction) {
+      const categoryExists = categories.some(
+        (category) => category.label === selectedTransaction.category
+      );
+      setValue("category", categoryExists ? selectedTransaction.category : "")
+    }
+  }, [selectedTransaction, categories]);
 
   useEffect(() => {
     if (selectedTransaction) {
@@ -119,6 +156,12 @@ export const TransactionForm = (props: TransactionFormProps) => {
       reset({ date: currentDay, amount: 0, content: "", type: "expense" });
     }
   }, [selectedTransaction]);
+
+  const handleDelete = async () => {
+    if (!selectedTransaction) return;
+    onDeleteTransaction(selectedTransaction.id);
+    setSelectedTransaction(null);
+  };
 
   return (
     <Box
@@ -258,8 +301,19 @@ export const TransactionForm = (props: TransactionFormProps) => {
             color={currentType === "income" ? "primary" : "error"}
             fullWidth
           >
-            保存
+            {selectedTransaction ? "更新" : "保存"}
           </Button>
+
+          {selectedTransaction && (
+            <Button
+              onClick={handleDelete}
+              variant="outlined"
+              color={"secondary"}
+              fullWidth
+            >
+              削除
+            </Button>
+          )}
         </Stack>
       </Box>
     </Box>

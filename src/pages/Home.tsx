@@ -6,15 +6,14 @@ import { TransactionForm } from "../components/TransactionForm";
 import { Transaction } from "../types";
 import { useState } from "react";
 import { format } from "date-fns";
+import { Schema } from "../validations/schema";
 
 interface HomeProps {
   monthlyTransactions: Transaction[];
   setCurrentMonth: React.Dispatch<React.SetStateAction<Date>>;
   onSaveTransaction: (transaction: Transaction) => Promise<void>;
-  selectedTransaction: Transaction | null;
-  setSelectedTransaction: React.Dispatch<
-    React.SetStateAction<Transaction | null>
-  >;
+  onDeleteTransaction: (transactionId: string) => Promise<void>;
+  onUpdateTransaction: (transaction: Schema, transactionId: string) => Promise<void>
 }
 
 export const Home = (props: HomeProps) => {
@@ -22,12 +21,14 @@ export const Home = (props: HomeProps) => {
     monthlyTransactions,
     setCurrentMonth,
     onSaveTransaction,
-    selectedTransaction,
-    setSelectedTransaction,
+    onDeleteTransaction,
+    onUpdateTransaction
   } = props;
   const today = format(new Date(), "yyyy-MM-dd");
   const [currentDay, setCurrentDay] = useState(today);
   const [isEntryDrawerOpen, setIsEntryDrawerOpen] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] =
+    useState<Transaction | null>(null);
 
   const dailyTransactions = monthlyTransactions.filter((transaction) => {
     return transaction.date === currentDay;
@@ -80,6 +81,9 @@ export const Home = (props: HomeProps) => {
           currentDay={currentDay}
           onSaveTransaction={onSaveTransaction}
           selectedTransaction={selectedTransaction}
+          onDeleteTransaction={onDeleteTransaction}
+          setSelectedTransaction={setSelectedTransaction}
+          onUpdateTransaction={onUpdateTransaction}
         />
       </Box>
     </Box>
