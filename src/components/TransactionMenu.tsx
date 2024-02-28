@@ -81,7 +81,7 @@ export const TransactionMenu = (props: TransactionMenuProps) => {
           <List aria-label="取引履歴">
             <Stack spacing={2}>
               {dailyTransactions.map((transaction) => (
-                <ListItem disablePadding>
+                <ListItem disablePadding key={transaction.id}>
                   <Card
                     sx={{
                       width: "100%",

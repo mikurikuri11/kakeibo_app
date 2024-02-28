@@ -137,6 +137,7 @@ export const TransactionForm = (props: TransactionFormProps) => {
   };
 
   useEffect(() => {
+    // 選択肢が更新されたか確認
     if (selectedTransaction) {
       const categoryExists = categories.some(
         (category) => category.label === selectedTransaction.category
@@ -151,7 +152,6 @@ export const TransactionForm = (props: TransactionFormProps) => {
       setValue("date", selectedTransaction.date);
       setValue("amount", selectedTransaction.amount);
       setValue("content", selectedTransaction.content);
-      setValue("category", selectedTransaction.category);
     } else {
       reset({ date: currentDay, amount: 0, content: "", type: "expense" });
     }
