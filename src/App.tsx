@@ -114,7 +114,7 @@ function App() {
       const updatedTransactions = transactions.map((t) =>
         t.id === transactionId ? { ...t, ...transaction } : t
       ) as Transaction[];
-      setTransactions(updatedTransactions );
+      setTransactions(updatedTransactions);
     } catch (error) {
       if (isFireStoreError(error)) {
         console.error("Firestore Error", error.code, error.message);
@@ -142,7 +142,15 @@ function App() {
                 />
               }
             />
-            <Route path="/report" element={<Report />} />
+            <Route
+              path="/report"
+              element={
+                <Report
+                  currentMonth={currentMonth}
+                  setCurrentMonth={setCurrentMonth}
+                />
+              }
+            />
             <Route path="*" element={<NoMatch />} />
           </Route>
         </Routes>
