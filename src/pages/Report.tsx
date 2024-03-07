@@ -1,7 +1,7 @@
 import { Grid, Paper } from "@mui/material";
 import { MonthSelector } from "../components/MonthSelector";
 import { CategoryChart } from "../components/CategoryChart";
-import { BarChart } from "@mui/icons-material";
+import { BarChart } from "../components/BarChart";
 import { TransactionTable } from "../components/TransactionTable";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
