@@ -33,7 +33,7 @@ export const AppLayout = () => {
   return (
     <Box
       sx={{
-        display: "flex",
+        display: { md: "flex"},
         bgcolor: (theme) => theme.palette.grey[100],
         minHeight: "100vh",
       }}

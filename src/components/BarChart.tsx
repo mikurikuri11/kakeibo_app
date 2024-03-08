@@ -6,8 +6,13 @@ import {
   Title,
   Tooltip,
   Legend,
-} from 'chart.js';
-import { Bar } from 'react-chartjs-2';
+  ChartData,
+} from "chart.js";
+import { Bar } from "react-chartjs-2";
+import { Transaction } from "../types";
+import { calculateDailyBalances } from "../utils/financeCaluculations";
+import { Box, Typography, useTheme } from "@mui/material";
+import CicularProgress from "@mui/material/CircularProgress";
 
 ChartJS.register(
   CategoryScale,
@@ -18,39 +23,67 @@ ChartJS.register(
   Legend
 );
 
-const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: 'top' as const,
-    },
-    title: {
-      display: true,
-      text: 'Chart.js Bar Chart',
-    },
-  },
-};
-
-const labels = ["202401-10", "2024-01-21", "2024-01-22", "2024-02-13", "2024-02-14", "2024-02-15", "2024-02-26"];
-
-const data = {
-  labels,
-  datasets: [
-    {
-      label: '支出',
-      data: [100, 440, 200, 300, 550, 600, 400],
-      backgroundColor: 'rgba(255, 99, 132, 0.5)',
-    },
-    {
-      label: '収入',
-      data: [600, 440, 200, 140, 500, 400, 900],
-      backgroundColor: 'rgba(53, 162, 235, 0.5)',
-    },
-  ],
-};
-
-export const BarChart = () => {
-  return (
-    <Bar options={options} data={data} />
-  )
+interface BarChartProps {
+  monthlyTransactions: Transaction[];
+  isLoading: boolean;
 }
+
+export const BarChart = (props: BarChartProps) => {
+  const { monthlyTransactions, isLoading } = props;
+  const theme = useTheme();
+
+  const options = {
+    maintanAspectRatio: false,
+    responsive: true,
+    plugins: {
+      // legend: {
+      //   position: 'top' as const,
+      // },
+      title: {
+        display: true,
+        text: "日別収支",
+      },
+    },
+  };
+
+  const dailyBalances = calculateDailyBalances(monthlyTransactions);
+
+  const dateLabels = Object.keys(dailyBalances).sort();
+  const expenceData = dateLabels.map((date) => dailyBalances[date].expense);
+  const incomeData = dateLabels.map((date) => dailyBalances[date].income);
+
+  const data: ChartData<"bar"> = {
+    labels: dateLabels,
+    datasets: [
+      {
+        label: "支出",
+        data: expenceData,
+        backgroundColor: theme.palette.expenseColor.light,
+      },
+      {
+        label: "収入",
+        data: incomeData,
+        backgroundColor: theme.palette.incomeColor.light,
+      },
+    ],
+  };
+
+  return (
+    <Box
+      sx={{
+        flexGrow: 1,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      {isLoading ? (
+        <CicularProgress />
+      ) : monthlyTransactions.length === 0 ? (
+        <Typography>データがありません</Typography>
+      ) : (
+        <Bar options={options} data={data} />
+      )}
+    </Box>
+  );
+};
