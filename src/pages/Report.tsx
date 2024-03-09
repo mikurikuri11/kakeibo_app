@@ -39,7 +39,7 @@ export const Report = (props: ReportProps) => {
         </Grid>
         <Grid item xs={12} md={4}>
           <Paper sx={commonPaperStyle}>
-            <CategoryChart />
+            <CategoryChart monthlyTransactions={monthlyTransactions} isLoading={isLoading} />
           </Paper>
         </Grid>
         <Grid item xs={12} md={8}>

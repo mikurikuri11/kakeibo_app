@@ -2,9 +2,13 @@ import {
   Box,
   Button,
   ButtonGroup,
+  FormControl,
+  FormHelperText,
   IconButton,
+  InputLabel,
   ListItemIcon,
   MenuItem,
+  Select,
   Stack,
   TextField,
   Typography,
@@ -142,7 +146,7 @@ export const TransactionForm = (props: TransactionFormProps) => {
       const categoryExists = categories.some(
         (category) => category.label === selectedTransaction.category
       );
-      setValue("category", categoryExists ? selectedTransaction.category : "")
+      setValue("category", categoryExists ? selectedTransaction.category : "");
     }
   }, [selectedTransaction, categories]);
 
@@ -246,20 +250,23 @@ export const TransactionForm = (props: TransactionFormProps) => {
             name="category"
             control={control}
             render={({ field }) => (
-              <TextField
-                label="カテゴリ"
-                select
-                {...field}
-                error={!!errors.category}
-                helperText={errors.category?.message}
-              >
-                {categories.map((category) => (
-                  <MenuItem key={category.label} value={category.label}>
-                    <ListItemIcon>{category.icon}</ListItemIcon>
-                    {category.label}
-                  </MenuItem>
-                ))}
-              </TextField>
+              <FormControl fullWidth error={!!errors.category}>
+                <InputLabel id="category-select-label">カテゴリ</InputLabel>
+                <Select
+                  {...field}
+                  labelId="category-select-label"
+                  id="category-select"
+                  label="カテゴリ"
+                >
+                  {categories.map((category) => (
+                    <MenuItem key={category.label} value={category.label}>
+                      <ListItemIcon>{category.icon}</ListItemIcon>
+                      {category.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+                <FormHelperText>{errors.category?.message}</FormHelperText>
+              </FormControl>
             )}
           />
           {/* 金額 */}

@@ -33,7 +33,7 @@ export const BarChart = (props: BarChartProps) => {
   const theme = useTheme();
 
   const options = {
-    maintanAspectRatio: false,
+    maintainAspectRatio: false,
     responsive: true,
     plugins: {
       // legend: {
