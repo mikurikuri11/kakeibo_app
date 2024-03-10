@@ -35,7 +35,9 @@ interface TransactionFormProps {
   currentDay: string;
   onSaveTransaction: (transaction: Transaction) => Promise<void>;
   selectedTransaction: Transaction | null;
-  onDeleteTransaction: (transactionId: string) => Promise<void>;
+  onDeleteTransaction: (
+    transactionIds: string | readonly string[]
+  ) => Promise<void>;
   setSelectedTransaction: React.Dispatch<
     React.SetStateAction<Transaction | null>
   >;
